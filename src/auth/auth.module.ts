@@ -1,19 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module'; // 👈 Asegúrate de que esté este import
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
-    UsersModule, // 👈 ¡ESTO FALTA! Conecta la autenticación con los usuarios
+    UsersModule,
+    PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'SECRET_KEY_TEMPORAL', // Usa tu variable de entorno
+      secret: process.env.JWT_SECRET || 'SECRET_KEY_TEMPORAL',
       signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
+  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

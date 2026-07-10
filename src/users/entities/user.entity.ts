@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Loan } from '../../loans/entities/loan.entity'; // Asegúrate de que la ruta coincida con tu estructura
 
 @Entity('users')
 export class User {
@@ -14,6 +15,13 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({ default: 'user' }) // 'admin' o 'user'
-  rol!: string;
+  /* 🎓 REGLA DE ROLES ACTUALIZADA: Se expande para soportar las reglas financieras de la pizarra */
+  @Column({ 
+    type: 'varchar', 
+    default: 'user' 
+  })
+  rol!: 'admin' | 'bibliotecario' | 'subadmin' | 'estudiante' | 'profesor' | 'cliente' | 'user';
+
+  @OneToMany(() => Loan, (loan) => loan.user)
+  prestamos?: Loan[];
 }

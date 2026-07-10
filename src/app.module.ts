@@ -4,15 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { BooksModule } from './books/books.module';
+import { LoansModule } from './loans/loans.module';
 
 @Module({
   imports: [
-    // Habilita la lectura del archivo .env de forma global
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    
-    // Configura TypeORM de manera asíncrona usando las variables del .env
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,15 +22,15 @@ import { BooksModule } from './books/books.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        autoLoadEntities: true, // Carga automáticamente las entidades que creemos
-        synchronize: true,     // Crea/actualiza las tablas automáticamente en desarrollo
+        autoLoadEntities: true,
+        synchronize: true,
       }),
     }),
 
-    // ¡AQUÍ ESTÁ LA SOLUCIÓN! Importamos los módulos para que NestJS los reconozca
     UsersModule,
     AuthModule,
     BooksModule,
+    LoansModule,
   ],
   controllers: [],
   providers: [],
